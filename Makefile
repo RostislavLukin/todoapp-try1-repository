@@ -40,3 +40,13 @@ migrate-action:
 		-path /migrations \
 		-database postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@env-postgres:5432/${POSTGRES_DB}?sslmode=disable \
 		"$(action)"
+
+env-cleanup:
+	@read -p "Опасность потери данных. Вы действительно хотите очистить файлы окружения? [y/N]:" ans; \
+	if [ "$$ans" = "y" ]; then \
+		docker compose down env-postgres port-forward && \
+		rm -rf pgdata && \
+		echo "Файлы окружения были удалены."; \
+	else \
+		echo "Отмена очистки файлов окружения."; \
+	fi
